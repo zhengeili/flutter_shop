@@ -13,7 +13,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title:Text('美好人间')),
-      body: Container(
+      body: SingleChildScrollView(
+        child:Container(
         child: Column(
           children: <Widget>[
             TextField(
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage> {
           ],
         )
       ),
+      )
     );
   }
   void _choiceAction(){
@@ -58,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     try {
       Response response;
       var data={'name':typeText};
-      response=await Dio().get('https://www.easy-mock.com/mock/5c60131a4bed3a6342711498/baixing/dabaojian',
+      response=await Dio().post('https://www.easy-mock.com/mock/5c60131a4bed3a6342711498/baixing/post_dabaojian',
       queryParameters: data
       );
       return response.data;
