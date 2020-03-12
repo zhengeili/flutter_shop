@@ -23,9 +23,11 @@ class _HomePageState extends State<HomePage> {
           if(snapshot.hasData){
             var data=json.decode(snapshot.data.toString());
             List<Map> swiper=(data['data']['slides'] as List).cast();
+            List<Map> navigatorList=(data['data']['category'] as List).cast();
             return Column(
               children: <Widget>[
-                SwiperDiy(swiperDateList: swiper)
+                SwiperDiy(swiperDateList: swiper),
+                TopNavigator(navigator: navigatorList)
               ],
             );
           }
@@ -42,7 +44,7 @@ class SwiperDiy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance=ScreenUtil(width: 750,height: 1334)..init(context);
+   
     print('设备的像素密度：${ScreenUtil.pixelRatio}');
     print('设备的高：${ScreenUtil.screenWidth}');
     print('设备的宽：${ScreenUtil.screenHeight}');
@@ -59,4 +61,36 @@ class SwiperDiy extends StatelessWidget {
       ),
     );
   }
+}
+class TopNavigator extends StatelessWidget {
+  final List navigator;
+  TopNavigator({Key key, this.navigator}) : super(key: key);
+
+  Widget _gridViewItemUI(BuildContext context,item){
+    return InkWell(
+      onTap: (){print('点击了导航');},
+      child: Column(
+        children: <Widget>[
+          Image.network(item['image'],width:ScreenUtil().setWidth(95)),
+          Text(item['mallCategoryName'])
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: ScreenUtil().setHeight(320),//只是自己大概预估的一个高度，后续可以再调整
+      padding: EdgeInsets.all(3.0),//为了不让它贴着屏幕的边缘，我们给它一个padding
+      child: GridView.count(
+        crossAxisCount: 5,//每行显示5个元素
+        padding: EdgeInsets.all(5),//每一项都设置一个padding,这样就不挨着了
+        children: navigator.map((item){
+            return _gridViewItemUI(context, item);
+        }).toList(),
+      ),
+    );
+  }
+  
 }
