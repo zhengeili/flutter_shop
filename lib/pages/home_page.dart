@@ -24,10 +24,12 @@ class _HomePageState extends State<HomePage> {
             var data=json.decode(snapshot.data.toString());
             List<Map> swiper=(data['data']['slides'] as List).cast();
             List<Map> navigatorList=(data['data']['category'] as List).cast();
+            String picture=data['data']['advertesPicture']['PICTURE_ADDRESS'];
             return Column(
               children: <Widget>[
                 SwiperDiy(swiperDateList: swiper),
-                TopNavigator(navigator: navigatorList)
+                TopNavigator(navigator: navigatorList),
+                AdBanner(adPicture:picture)
               ],
             );
           }
@@ -93,4 +95,15 @@ class TopNavigator extends StatelessWidget {
     );
   }
   
+}
+class AdBanner extends StatelessWidget {
+  final String adPicture;
+  const AdBanner({Key key,this.adPicture}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Image.network(adPicture),
+    );
+  }
 }
