@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
             return Column(
               children: <Widget>[
                 SwiperDiy(swiperDateList: swiper),
-                TopNavigator(navigator: navigatorList),
+                TopNavigator(navigatorList: navigatorList),
                 AdBanner(adPicture:picture),
                 LeaderPhone(leaderImage:leaderImage,leaderPhone:leaderPhone)
               ],
@@ -69,8 +69,8 @@ class SwiperDiy extends StatelessWidget {
   }
 }
 class TopNavigator extends StatelessWidget {
-  final List navigator;
-  TopNavigator({Key key, this.navigator}) : super(key: key);
+  final List navigatorList;
+  TopNavigator({Key key, this.navigatorList}) : super(key: key);
 
   Widget _gridViewItemUI(BuildContext context,item){
     return InkWell(
@@ -86,13 +86,16 @@ class TopNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(this.navigatorList.length>10){
+      this.navigatorList.removeRange(10, this.navigatorList.length);//从第十个截取，后面都截取掉
+    }
     return Container(
       height: ScreenUtil().setHeight(320),//只是自己大概预估的一个高度，后续可以再调整
       padding: EdgeInsets.all(3.0),//为了不让它贴着屏幕的边缘，我们给它一个padding
       child: GridView.count(
         crossAxisCount: 5,//每行显示5个元素
         padding: EdgeInsets.all(5),//每一项都设置一个padding,这样就不挨着了
-        children: navigator.map((item){
+        children: navigatorList.map((item){
             return _gridViewItemUI(context, item);
         }).toList(),
       ),
