@@ -10,8 +10,18 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   String homePageContent='正在获取数据';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('111111');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,11 +163,11 @@ class Recommend extends StatelessWidget {
   Widget _titleWidget(){
     return Container(
       alignment: Alignment.centerLeft,//局部靠左对齐
-      padding: EdgeInsets.fromLTRB(10, 2.0, 0, 5.0),//做上右下
+      padding: EdgeInsets.fromLTRB(10, 2.0, 0, 5.0),//左上右下
       decoration: BoxDecoration(
         color:Colors.white,
         border:Border(
-          bottom:BorderSide(width: 0.5,color:Colors.black12)//设置底部hottom边框，Black12是浅灰色
+          bottom:BorderSide(width: 1,color:Colors.black12)//设置底部hottom边框，Black12是浅灰色
         )
       ),
       child: Text(
@@ -170,13 +180,13 @@ class Recommend extends StatelessWidget {
     return InkWell(
       onTap: (){},
       child: Container(
-        height:ScreenUtil().setHeight(330),//兼容性的高度，用了screenUtil
+        height:ScreenUtil().setHeight(380),//兼容性的高度，用了screenUtil
         width:ScreenUtil().setWidth(250),//750除以3所以是250
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color:Colors.white,
           border:Border(
-            left:BorderSide(width: 0.5,color:Colors.black12)//左侧的边线样式和宽度
+            left:BorderSide(width: 1,color:Colors.black12)//左侧的边线样式和宽度
           )
         ),
         child: Column(
@@ -195,13 +205,14 @@ class Recommend extends StatelessWidget {
       ),
     );
   }
+  //横向列表组件
   Widget _recommendList(){
     return Container(
-      height:ScreenUtil().setHeight(330),
+      height:ScreenUtil().setHeight(380),
       child:ListView.builder(
         scrollDirection:Axis.horizontal,//横向的
         itemCount: recommendList.length,
-        itemBuilder: (BuildContext context, int index) {
+        itemBuilder: (context, index) {
         return _item(index);
        },
       ),
@@ -210,7 +221,7 @@ class Recommend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height:ScreenUtil().setHeight(380),
+      height:ScreenUtil().setHeight(438),//里被哦按已经设置了330了因为还有上面的标题，所以要比330高，这里先设置为380
       margin: EdgeInsets.only(top:10.0),//设置外边距
       child: Column(
         children: <Widget>[

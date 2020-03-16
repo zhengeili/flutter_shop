@@ -32,7 +32,7 @@ class _IndexPageState extends State<IndexPage> {
       title: Text('会员中心')
     )
   ];
-  final List tabBodied=[
+  final List<Widget> tabBodies=[
     HomePage(),
     CategoryPage(),
     CartPage(),
@@ -42,7 +42,7 @@ class _IndexPageState extends State<IndexPage> {
   var currentPage;
   @override
   void initState() { 
-    currentPage=tabBodied[currentIndex];//默认页面数组内索引值为0的页面
+    currentPage=tabBodies[currentIndex];//默认页面数组内索引值为0的页面
     super.initState();
     
   }
@@ -60,11 +60,14 @@ class _IndexPageState extends State<IndexPage> {
         onTap: (index){
           setState(() {
             currentIndex=index;
-            currentPage=tabBodied[currentIndex];
+            currentPage=tabBodies[currentIndex];
           });
         },
       ),
-      body: currentPage,
+      body: IndexedStack(
+        index:currentIndex,
+        children: tabBodies,
+      ),
     );
   }
 }
