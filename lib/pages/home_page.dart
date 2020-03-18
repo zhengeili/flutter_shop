@@ -25,11 +25,11 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
 
   @override
   Widget build(BuildContext context) {
-    
+    var formData={'lon':'115.02932','lat':'35.76189'};//传一个经纬度过去，防止恶意下单
     return Scaffold(
       appBar: AppBar(title:Text('百兴生活+')),
       body: FutureBuilder(
-        future: getHomePageContent(),
+        future: request('homePageContent', formData),
         builder: (context,snapshot){
           if(snapshot.hasData){
             var data=json.decode(snapshot.data.toString());
@@ -58,7 +58,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                   FloorTitle(picture_address: floor2Title,),
                   FloorContent(floorGoodsList:floor2),
                   FloorTitle(picture_address: floor3Title,),
-                  FloorContent(floorGoodsList:floor3)
+                  FloorContent(floorGoodsList:floor3),
+                  HotGoods()
                 ],
               )
             );
@@ -308,3 +309,27 @@ class FloorContent extends StatelessWidget {
     );
   }
 }
+//火爆专区，定义为动态的类
+class HotGoods extends StatefulWidget {
+  @override
+  _HotGoodsState createState() => _HotGoodsState();
+}
+
+class _HotGoodsState extends State<HotGoods> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('火爆专区数据加载中.......');
+    request('homePageBelowConten',1).then((val){
+      print(val);
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('1111'),
+    );
+  }
+}
+
