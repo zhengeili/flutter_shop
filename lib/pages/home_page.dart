@@ -14,12 +14,15 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
   @override
   bool get wantKeepAlive => true;
 
+  int page=1;
+  List<Map> hotGoodsList=[];//火爆专区数据
   String homePageContent='正在获取数据';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getHotGoods();//获取火爆专区的数据
     print('111111');
   }
 
@@ -29,7 +32,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
     return Scaffold(
       appBar: AppBar(title:Text('百兴生活+')),
       body: FutureBuilder(
-        future: request('homePageContent', formData),
+        future: request('homePageContent', formData:formData),
         builder: (context,snapshot){
           if(snapshot.hasData){
             var data=json.decode(snapshot.data.toString());
@@ -59,7 +62,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
                   FloorContent(floorGoodsList:floor2),
                   FloorTitle(picture_address: floor3Title,),
                   FloorContent(floorGoodsList:floor3),
-                  HotGoods()
+                  _hotGoods()
                 ],
               )
             );
@@ -68,9 +71,81 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
       )
     );
   }
-  
-}
+  void _getHotGoods(){
+    var formData={'page':page};
+    request('homePageBelowConten',formData: formData).then((val){
+      var data=json.decode(val.toString());
+      List<Map> newGoodsList=(data['data'] as List).cast();
+      //把新的列表加到老的列表里面
+      setState(() {
+        hotGoodsList.addAll(newGoodsList);
+        page++;
+      });
+    });
+  }
+  Widget hotTitle = Container(
+    margin: EdgeInsets.only(top: 10.0),//上边距
+    alignment: Alignment.center,//居中对齐
+    color: Colors.transparent,
+    padding: EdgeInsets.all(5.0),//外边距
+    child: Text('火爆专区'),
+  );
+  //流布局列表数据
+  Widget _wrapList(){
+    if(hotGoodsList.length!=0){
+      List<Widget> listWidget=hotGoodsList.map((val){
+        return InkWell(
+          onTap: (){},
+          child: Container(
+            width: ScreenUtil().setWidth(372),
+            color: Colors.white,
+            padding: EdgeInsets.all(5.0),//内边距
+            margin: EdgeInsets.only(bottom:3.0),//外边距
+            child: Column(
+              children: <Widget>[
+                Image.network(val['image'],width: ScreenUtil().setWidth(370),),//设置宽度防止超出边界
+                Text(
+                  val['name'],
+                  maxLines: 1,//只有一行
+                  overflow: TextOverflow.ellipsis,//超出显示省略号
+                  style: TextStyle(color: Colors.pink,fontSize: ScreenUtil().setSp(26)),
+                ),
+                Row(
+                  children: <Widget>[
+                    Text('￥${val['mallPrice']}'),//商品价格
+                    Text(
+                      '￥${val['price']}',
+                      style:TextStyle(color: Colors.black26,decoration: TextDecoration.lineThrough),//
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      }).toList();
 
+      return Wrap(
+        spacing: 2,
+        children: listWidget,
+      );
+    }else{
+      return Text('');
+    }
+  }
+  //组装标题 流式布局
+  Widget _hotGoods(){
+    return Container(
+      child: Column(
+        children: <Widget>[
+          hotTitle,
+          _wrapList()
+        ],
+      ),
+    );
+  }
+}
+//首页轮播插件
 class SwiperDiy extends StatelessWidget {
   final List swiperDateList;
   SwiperDiy({this.swiperDateList});
@@ -309,27 +384,27 @@ class FloorContent extends StatelessWidget {
     );
   }
 }
-//火爆专区，定义为动态的类
-class HotGoods extends StatefulWidget {
-  @override
-  _HotGoodsState createState() => _HotGoodsState();
-}
-
-class _HotGoodsState extends State<HotGoods> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    print('火爆专区数据加载中.......');
-    request('homePageBelowConten',1).then((val){
-      print(val);
-    });
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text('1111'),
-    );
-  }
-}
+////火爆专区，定义为动态的类
+//class HotGoods extends StatefulWidget {
+//  @override
+//  _HotGoodsState createState() => _HotGoodsState();
+//}
+//
+//class _HotGoodsState extends State<HotGoods> {
+//  @override
+//  void initState() {
+//    // TODO: implement initState
+//    super.initState();
+//    print('火爆专区数据加载中.......');
+//    request('homePageBelowConten',formData:1).then((val){
+//      print(val);
+//    });
+//  }
+//  @override
+//  Widget build(BuildContext context) {
+//    return Container(
+//      child: Text('1111'),
+//    );
+//  }
+//}
 
